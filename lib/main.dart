@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'grid_element.dart';
 
 void main() => runApp(MyApp());
 
@@ -47,6 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   bool selected = false;
   int _selectedIndex = 0;
+  String dropdownValue = 'One';
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
@@ -96,47 +98,227 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
 
-      body: Wrap(
-        direction: Axis.horizontal,
+      body: GridView.count(
+        primary: false,
+        padding: const EdgeInsets.all(20),
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        crossAxisCount: 2,
         children: <Widget>[
-          Text(
-            'Pushed FAB $_counter times',
-            style: Theme.of(context).textTheme.title,
-          ),
-          Text(
-            'Pushed FAB $_counter times',
-            style: Theme.of(context).textTheme.title,
-          ),
-          Text(
-            'Pushed FAB $_counter times',
-            style: Theme.of(context).textTheme.title,
-          ),
-          Text(
-            'Pushed FAB $_counter times',
-            style: Theme.of(context).textTheme.title,
-          ),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                selected = !selected;
-              });
-            },
-            child: AnimatedContainer(
-              width: selected ? 150.0 : 100.0,
-              height: selected ? 100.0 : 150.0,
-              color: selected ? Colors.red : Colors.blue,
-              alignment:
-                  selected ? Alignment.center : AlignmentDirectional.topCenter,
-              duration: Duration(seconds: 1),
-              curve: Curves.fastOutSlowIn,
-              child: FlutterLogo(size: 100),
+          GridItem(
+            widgetName: 'Text',
+            widget: Text(
+              'Pushed FAB $_counter times',
+              style: Theme.of(context).textTheme.title,
             ),
           ),
-          Center(
-            child: _widgetOptions.elementAt(_selectedIndex),
+          GridItem(
+            widgetName: 'AnimatedContainer',
+            widget: GestureDetector(
+              onTap: () {
+                setState(() {
+                  selected = !selected;
+                });
+              },
+              child: AnimatedContainer(
+                width: selected ? 100.0 : 80.0,
+                height: selected ? 80.0 : 100.0,
+                color: selected ? Colors.red : Colors.blue,
+                alignment: selected
+                    ? Alignment.center
+                    : AlignmentDirectional.topCenter,
+                duration: Duration(seconds: 1),
+                curve: Curves.fastOutSlowIn,
+                child: FlutterLogo(size: 100),
+              ),
+            ),
           ),
+          GridItem(
+            widgetName: 'Center',
+            widget: Center(
+              child: _widgetOptions.elementAt(_selectedIndex),
+            ),
+          ),
+          GridItem(
+            widgetName: 'Chip',
+            widget: Chip(
+              avatar: CircleAvatar(
+                backgroundColor: Colors.yellow,
+                child: Text('SS'),
+              ),
+              label: Text('Flutter Developer'),
+              backgroundColor: Colors.cyan,
+            ),
+          ),
+          GridItem(
+            widgetName: 'AnimatedCrossFade',
+            widget: AnimatedCrossFade(
+              duration: const Duration(seconds: 3),
+              firstChild: const FlutterLogo(
+                  style: FlutterLogoStyle.horizontal, size: 100.0),
+              secondChild: const FlutterLogo(
+                  style: FlutterLogoStyle.stacked, size: 100.0),
+              crossFadeState: CrossFadeState.showFirst,
+            ),
+          ),
+          GridItem(
+            widgetName: 'DecoratedBox',
+            widget: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  center: const Alignment(-0.5, -0.6),
+                  radius: 0.15,
+                  colors: <Color>[
+                    const Color(0xFFEEEEEE),
+                    const Color(0xFF111133),
+                  ],
+                  stops: <double>[0.9, 1.0],
+                ),
+              ),
+            ),
+          ),
+          GridItem(
+            widgetName: 'DropdownButton',
+            widget: DropdownButton<String>(
+              value: dropdownValue,
+              icon: Icon(Icons.arrow_downward),
+              iconSize: 24,
+              elevation: 16,
+              style: TextStyle(color: Colors.deepPurple),
+              underline: Container(
+                height: 2,
+                color: Colors.deepPurpleAccent,
+              ),
+              onChanged: (String newValue) {
+                setState(() {
+                  dropdownValue = newValue;
+                });
+              },
+              items: <String>['One', 'Two', 'Three', 'Four']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
+          GridItem(
+            widgetName: 'FlatButton',
+            widget: FlatButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              disabledColor: Colors.grey,
+              disabledTextColor: Colors.black,
+              padding: EdgeInsets.all(8.0),
+              splashColor: Colors.blueAccent,
+              onPressed: () {
+                /*...*/
+              },
+              child: Text(
+                "Flat Button",
+                style: TextStyle(fontSize: 20.0),
+              ),
+            ),
+          ),
+          GridItem(
+            widgetName: 'Icon',
+            widget: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: const <Widget>[
+                Icon(
+                  Icons.favorite,
+                  color: Colors.pink,
+                  size: 24.0,
+                  semanticLabel: 'Text to announce in accessibility modes',
+                ),
+                Icon(
+                  Icons.audiotrack,
+                  color: Colors.green,
+                  size: 30.0,
+                ),
+                Icon(
+                  Icons.beach_access,
+                  color: Colors.blue,
+                  size: 36.0,
+                ),
+              ],
+            ),
+          ),
+          GridItem(
+            widgetName: 'IconButton',
+            widget: Ink(
+              decoration: ShapeDecoration(
+                color: Colors.lightBlue,
+                shape: CircleBorder(),
+              ),
+              child: IconButton(
+                icon: Icon(
+                  Icons.android,
+                  size: 60,
+                ),
+                color: Colors.white,
+                onPressed: () {
+                  print("filled background");
+                },
+              ),
+            ),
+          ),
+          GridItem(
+            widgetName: 'Image',
+            widget: Image(
+              image: NetworkImage(
+                  'http://downloads.saibaba.com/publications/pubLogo.png'),
+            ),
+          ),
+          GridItem(
+            widgetName: 'RaisedButton',
+            widget: RaisedButton(
+              onPressed: () {},
+              textColor: Colors.white,
+              padding: const EdgeInsets.all(0.0),
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: <Color>[
+                      Color(0xFF0D47A1),
+                      Color(0xFF1976D2),
+                      Color(0xFF42A5F5),
+                    ],
+                  ),
+                ),
+                padding: const EdgeInsets.all(10.0),
+                child: const Text('Gradient Button',
+                    style: TextStyle(fontSize: 20)),
+              ),
+            ),
+          ),
+          GridItem(
+            widgetName: 'RichText',
+            widget: RichText(
+              text: TextSpan(
+                text: 'Hello ',
+                style: DefaultTextStyle.of(context).style,
+                children: <TextSpan>[
+                  TextSpan(
+                      text: 'bold',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  TextSpan(text: ' world!'),
+                ],
+              ),
+            ),
+          ),
+          GridItem(
+            widgetName: 'RotatedBox',
+            widget: RotatedBox(
+              quarterTurns: 3,
+              child: const Text('Hello World!'),
+            ),
+          )
         ],
       ),
+
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
