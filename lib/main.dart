@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'grid_element.dart';
+import 'animated_builder.dart';
 
 void main() => runApp(MyApp());
 
@@ -44,14 +45,21 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+// This is the type used by the popup menu below.
+enum WhyFarther { harder, smarter, selfStarter }
+
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  int _index = 0;
   bool selected = false;
   int _selectedIndex = 0;
   String dropdownValue = 'One';
+  double _volume = 0.0;
+  String _imageUrl =
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRRd8HH7mf2V8ee2YhATvvxV28kb4QcjjhCwl0zhe-KqlMRmvdcA';
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
+  AlignmentGeometry _alignment = Alignment.topRight;
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -60,6 +68,14 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
+    });
+  }
+
+  void _changeAlignment() {
+    setState(() {
+      _alignment = _alignment == Alignment.topRight
+          ? Alignment.bottomLeft
+          : Alignment.topRight;
     });
   }
 
@@ -96,6 +112,34 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.grey,
+              ),
+              child: Center(
+                child: SizedBox(
+                  width: 60.0,
+                  height: 60.0,
+                  child: CircleAvatar(
+                    child: FlutterLogo(),
+                  ),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.change_history),
+              title: Text('Change history'),
+              onTap: () {
+                // change app state...
+                Navigator.pop(context); // close the drawer
+              },
+            )
+          ],
+        ),
       ),
 
       body: GridView.count(
@@ -315,7 +359,296 @@ class _MyHomePageState extends State<MyHomePage> {
               quarterTurns: 3,
               child: const Text('Hello World!'),
             ),
-          )
+          ),
+          GridItem(
+            widgetName: 'AnimatedAlign',
+            widget: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Container(
+                  height: 80.0,
+                  width: 80.0,
+                  color: Colors.blue[50],
+                  child: AnimatedAlign(
+                    alignment: _alignment,
+                    curve: Curves.ease,
+                    duration: Duration(seconds: 2),
+                    child: FlutterLogo(
+                      size: 60,
+                    ),
+                  ),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    _changeAlignment();
+                  },
+                  child: Text(
+                    "Click Me!",
+                  ),
+                )
+              ],
+            ),
+          ),
+          GridItem(
+            widgetName: 'AnimatedBuilder',
+            widget: Spinner(),
+          ),
+          GridItem(
+            widgetName: 'AspectRatio',
+            widget: Container(
+              height: 100,
+              child: new AspectRatio(
+                aspectRatio: 4 / 3,
+                child: new Container(
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ),
+          GridItem(
+            widgetName: 'Banner',
+            widget: Center(
+              child: Container(
+                margin: const EdgeInsets.all(10.0),
+                color: Colors.yellow,
+                height: 100,
+                child: ClipRect(
+                  child: Banner(
+                    message: "hello",
+                    location: BannerLocation.topEnd,
+                    color: Colors.red,
+                    child: Container(
+                      color: Colors.yellow,
+                      height: 100,
+                      child: Center(
+                        child: Text("Hello, banner!"),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          GridItem(
+            widgetName: 'BottomSheet',
+            widget: RaisedButton(
+              child: const Text('SHOW BOTTOM SHEET'),
+              onPressed: () {
+                showModalBottomSheet<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Container(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32.0),
+                          child: Text(
+                            'This is the modal bottom sheet. Slide down to dismiss.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Theme.of(context).accentColor,
+                              fontSize: 24.0,
+                            ),
+                          ),
+                        ),
+                      );
+                    });
+              },
+            ),
+          ),
+          GridItem(
+            widgetName: 'ButtonBar',
+            widget: ButtonBar(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                FlatButton(
+                  child: Text('OK'),
+                  color: Colors.blue,
+                  onPressed: () {/** */},
+                ),
+                FlatButton(
+                  child: Text('Cancel'),
+                  color: Colors.blue,
+                  onPressed: () {/** */},
+                ),
+              ],
+            ),
+          ),
+          GridItem(
+            widgetName: 'Card',
+            widget: Card(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const ListTile(
+                    leading: Icon(Icons.album),
+                    title: Text('The Enchanted Nightingale'),
+                    subtitle:
+                        Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
+                  ),
+                  ButtonTheme.bar(
+                    // make buttons use the appropriate styles for cards
+                    child: ButtonBar(
+                      children: <Widget>[
+                        FlatButton(
+                          child: const Text('BUY TICKETS'),
+                          onPressed: () {/* ... */},
+                        ),
+                        FlatButton(
+                          child: const Text('LISTEN'),
+                          onPressed: () {/* ... */},
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          GridItem(
+            widgetName: 'CircularProgressIndicator',
+            widget: CircularProgressIndicator(),
+          ),
+          GridItem(
+            widgetName: 'ClipOval',
+            widget: ClipOval(
+              child: SizedBox(
+                width: 120,
+                height: 100,
+                child: Image.network(
+                  _imageUrl,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          GridItem(
+            widgetName: 'ClipRRect',
+            widget: ClipRRect(
+              borderRadius: BorderRadius.circular(50),
+              child: SizedBox(
+                width: 100,
+                height: 100,
+                child: Image.network(
+                  _imageUrl,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          GridItem(
+            widgetName: 'ClipRect',
+            widget: ClipRect(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                heightFactor: 0.8,
+                widthFactor: 0.7,
+                child: Image.network(_imageUrl),
+              ),
+            ),
+          ),
+          GridItem(
+            widgetName: 'IconButton',
+            widget: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.volume_up),
+                  tooltip: 'Increase volume by 10',
+                  onPressed: () {
+                    setState(() {
+                      _volume += 10;
+                    });
+                  },
+                ),
+                Text('Volume : $_volume')
+              ],
+            ),
+          ),
+          GridItem(
+            widgetName: 'LinearProgressIndicator',
+            widget: LinearProgressIndicator(),
+          ),
+          GridItem(
+            widgetName: 'OutlineButton',
+            widget: OutlineButton(
+              onPressed: () {
+                /*...*/
+              },
+              child: Text(
+                "Outline Button",
+              ),
+            ),
+          ),
+          GridItem(
+            widgetName: 'PhysicalModel',
+            widget: PhysicalModel(
+              elevation: 6.0,
+              shape: BoxShape.rectangle,
+              shadowColor: Colors.black,
+              color: Colors.white,
+              child: Container(
+                height: 100.0,
+                width: 100.0,
+                color: Colors.blue[50],
+                child: FlutterLogo(
+                  size: 60,
+                ),
+              ),
+            ),
+          ),
+          GridItem(
+            widgetName: 'PlaceHolder',
+            widget: Container(
+              width: 100,
+              height: 100,
+              color: Colors.white,
+              child: Placeholder(
+                color: Colors.blue[50],
+              ),
+            ),
+          ),
+          GridItem(
+            widgetName: 'PopupMenuButton',
+            widget: PopupMenuButton<WhyFarther>(
+              onSelected: (WhyFarther result) {
+                setState(() {});
+              },
+              itemBuilder: (BuildContext context) =>
+                  <PopupMenuEntry<WhyFarther>>[
+                const PopupMenuItem<WhyFarther>(
+                  value: WhyFarther.harder,
+                  child: Text('Work'),
+                ),
+                const PopupMenuItem<WhyFarther>(
+                  value: WhyFarther.smarter,
+                  child: Text('Think'),
+                ),
+                const PopupMenuItem<WhyFarther>(
+                  value: WhyFarther.selfStarter,
+                  child: Text('Start'),
+                ),
+              ],
+            ),
+          ),
+          GridItem(
+            widgetName: 'Stack',
+            widget: Stack(children: <Widget>[
+              Container(
+                width: 100,
+                height: 100,
+                color: Colors.red,
+              ),
+              Container(
+                width: 90,
+                height: 90,
+                color: Colors.green,
+              ),
+              Container(
+                width: 80,
+                height: 80,
+                color: Colors.blue,
+              ),
+            ]),
+          ),
         ],
       ),
 
