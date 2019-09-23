@@ -133,6 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               leading: Icon(Icons.change_history),
               title: Text('Change history'),
+              trailing: Icon(Icons.access_alarm),
               onTap: () {
                 // change app state...
                 Navigator.pop(context); // close the drawer
@@ -144,10 +145,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
       body: GridView.count(
         primary: false,
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(15),
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
-        crossAxisCount: 2,
+        crossAxisCount: 1,
         children: <Widget>[
           GridItem(
             widgetName: 'Text',
@@ -195,16 +196,28 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           GridItem(
-            widgetName: 'AnimatedCrossFade',
-            widget: AnimatedCrossFade(
-              duration: const Duration(seconds: 3),
-              firstChild: const FlutterLogo(
-                  style: FlutterLogoStyle.horizontal, size: 100.0),
-              secondChild: const FlutterLogo(
-                  style: FlutterLogoStyle.stacked, size: 100.0),
-              crossFadeState: CrossFadeState.showFirst,
-            ),
-          ),
+              widgetName: 'AnimatedCrossFade',
+              widget: Column(
+                children: <Widget>[
+                  AnimatedCrossFade(
+                      duration: const Duration(seconds: 2),
+                      firstChild: const FlutterLogo(
+                          style: FlutterLogoStyle.horizontal, size: 80.0),
+                      secondChild: const FlutterLogo(
+                          style: FlutterLogoStyle.stacked, size: 80.0),
+                      crossFadeState: selected
+                          ? CrossFadeState.showFirst
+                          : CrossFadeState.showSecond),
+                  RaisedButton(
+                    onPressed: () {
+                      setState(() {
+                        selected = !selected;
+                      });
+                    },
+                    child: Text('Cross fade'),
+                  )
+                ],
+              )),
           GridItem(
             widgetName: 'DecoratedBox',
             widget: DecoratedBox(
@@ -297,9 +310,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 shape: CircleBorder(),
               ),
               child: IconButton(
-                icon: Icon(
-                  Icons.android,
-                  size: 60,
+                icon: Center(
+                  child: Icon(
+                    Icons.android,
+                    size: 60,
+                  ),
                 ),
                 color: Colors.white,
                 onPressed: () {
@@ -505,14 +520,17 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           GridItem(
             widgetName: 'CircularProgressIndicator',
-            widget: CircularProgressIndicator(),
+            widget: CircularProgressIndicator(
+              strokeWidth: 3.0,
+              backgroundColor: Colors.red,
+            ),
           ),
           GridItem(
             widgetName: 'ClipOval',
             widget: ClipOval(
               child: SizedBox(
-                width: 120,
-                height: 100,
+                width: 200,
+                height: 150,
                 child: Image.network(
                   _imageUrl,
                   fit: BoxFit.cover,
@@ -646,6 +664,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: 80,
                 height: 80,
                 color: Colors.blue,
+              ),
+              Icon(
+                Icons.android,
+                color: Colors.white,
+                size: 50.0,
               ),
             ]),
           ),
